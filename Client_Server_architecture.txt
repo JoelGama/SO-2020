@@ -1,0 +1,20 @@
+Cliente:
+
+	1- Inicia com comando shell, por exemplo "client"
+	2- Lê do stdin
+	3- Envia o que leu a partir de uma função (comunicação por pipes)
+
+	-- Server
+
+	4- Imprime o que recebe
+	5- Volta ao passo 2
+
+Server:
+
+	1- Iniciar com "server", por exemplo
+	2- Recebe uma string com o comando
+	3- Faz split da string
+	4- Com um switch executa o comando pretendido
+	5.1- Envia erro caso não seja válido
+	5.2- Envia o resultado no caso de sucesso ou correr dentro do esperado
+	6- espera por mais comandos 
