@@ -9,6 +9,9 @@ Cliente:
 	4- Imprime o que recebe
 	5- Volta ao passo 2
 
+	ps: Joel, acho que a ideia, é passar para o passo 2 antes de esperar
+	    pelo resultado do Server.
+
 Server:
 
 	1- Iniciar com "server", por exemplo
