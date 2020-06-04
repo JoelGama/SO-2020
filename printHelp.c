@@ -4,7 +4,6 @@
 #include <fcntl.h>
 
 int printHelp(){
-	
 	int i = 0;
 	char *buf[1024];
 
