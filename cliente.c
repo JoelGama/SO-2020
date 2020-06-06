@@ -7,13 +7,13 @@
 #include <fcntl.h>
 
 int main(int argc, char *argv[]){
-	if(argc == 1){
-		int fd;
-		if((fd = open("named_pipe",O_WRONLY)) < 0){
-			perror("open");
-			exit(1);
-		}
+	int fd;
+	if((fd = open("named_pipe",O_WRONLY)) < 0){
+		perror("open");
+		exit(1);
+	}
 
+	if(argc == 1){
 		write(1,"\e[1;1H\e[2J",11);
 
 		char buf[100];
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 		}
 	}else{
 		int i;
-		char comando[100]
+		char comando[100];
 		for(i=1 ; i<argc ; i++){
 			strcat(comando, argv[i]);
 			strcat(comando, " ");
