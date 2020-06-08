@@ -8,7 +8,7 @@
 
 int main(int argc,char const *argv[]){
 	int fd;
-	fd = open("named_pipe",O_RDONLY);
+	fd = open("Cliente",O_RDONLY);
 
 	char buf[100];
 	int bytes_read = 0;

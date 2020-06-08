@@ -8,10 +8,10 @@
 
 int main(int argc, char *argv[]){
 	int fd;
-	if((fd = open("named_pipe",O_WRONLY)) < 0){
+	if((fd = open("Cliente",O_WRONLY)) < 0){
 		perror("open");
 		exit(1);
-	}
+	}	
 
 	if(argc == 1){
 		write(1,"\e[1;1H\e[2J",11);
@@ -22,11 +22,11 @@ int main(int argc, char *argv[]){
 		write(1,"argus$ ",7);
 
 		while((read_bytes = read(0,buf,100))>0){
-			write(1,"argus$ ",7);
 			if(write(fd,buf,read_bytes) < 0){
 				perror("write");
 				exit(1);
 			}
+			write(1,"argus$ ",7);
 		}
 	}else{
 		int i;
