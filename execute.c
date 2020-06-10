@@ -1,5 +1,8 @@
+#include <sys/wait.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 char *strtok(char *str, const char *delim);
 
@@ -19,48 +22,69 @@ static char** split(char* command){
     return argv;
 }
 
-void execturar(char* command) {
+int executar(char const *command[], int argc) {
 
     int status;
-    int i = 0;
+    int i = 1;
+    int j = argc;
     pid_t pid;
-    int cmds[20]
-    int cmd[10]
+    int cc = 0;
+    int count = 0;
+    char *cmds[50];
+    char *cmd[20];
 
     char** argv = malloc(sizeof(char*) * 100);
 
-    int pipefds[2*numPipes];
+    char* str = "";
+    char* aux;
 
-    for(i = 0; i < (numPipes); i++){
+    while(command[i] != NULL) {
+
+        if (command[i+1] == NULL){
+            str = (char*)command[i];
+            cmds[i-1] = str;
+            str = "";
+            i++;
+            break;
+        }
+
+        if (command[i] == "|"){
+            cmds[i] = str;
+            str = "";
+            i++;
+        } else {
+
+
+            aux = (char*)command[i];
+            str = strcat(str,aux);
+        }
+    }
+    i-1;
+    cmds[i] = NULL;
+    cc = i;
+
+    int pipefds[2*cc];
+
+    for(i = 0; i < cc; i++){
         if(pipe(pipefds + i*2) < 0) {
             perror("couldn't pipe");
             exit(EXIT_FAILURE);
         }
     }
 
-    char* token = strtok(command, "|");
-    i = 0
-    while( token != NULL ) {
-        cmds[i] = token;
-        i++;
-        token = strtok(NULL, "|");
-    }
-    cmds[i] = -1
-
-    count = 0
-    int j = 0;
-    while(cmds[count] != -1) {
+    j = 0;
+    while(cmds[count] != NULL) {
         pid = fork();
         if(pid == 0) {
 
             //if not last command
-            if(cmds[count+1] != -1){
+            if(cmds[count+1] != NULL){
                 if(dup2(pipefds[j + 1], 1) < 0){
                     perror("dup2");
                     exit(EXIT_FAILURE);
                 }
             }
-
+            count--;
             //if not first command&& j!= 2*numPipes
             if(count != 0 ){
                 if(dup2(pipefds[j-2], 0) < 0){
@@ -70,13 +94,16 @@ void execturar(char* command) {
                 }
             }
 
-            for(i = 0; i < 2*numPipes; i++){
-                    close(pipefds[i]);
+            for(i = 0; i < 2*cc; i++){
+                close(pipefds[i]);
             }
 
             argv = split(cmds[count]);
-            if( execvp(argv[0], argv) < 0 ){
-                    perror(*command->arguments);
+
+            printf("argv[%d]: %s\n",count,(char*)argv[0]);
+
+            if(execvp(argv[0], argv) < 0){
+                    perror(argv[0]);
                     exit(EXIT_FAILURE);
             }
 
@@ -90,10 +117,20 @@ void execturar(char* command) {
     }
 
     /**Parent closes the pipes and wait for children*/
-    for(i = 0; i < 2 * numPipes; i++){
+    for(i = 0; i < 2 * cc; i++){
         close(pipefds[i]);
     }
 
-    for(i = 0; i < numPipes + 1; i++)
+    for(i = 0; i < cc + 1; i++)
         wait(&status);
+
+    return 0;
+}
+
+
+int main(int argc, char const *argv[]){
+    
+    int i = executar(argv, argc-1);
+
+    return i;
 }
