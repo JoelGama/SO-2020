@@ -4,13 +4,13 @@
 #include <fcntl.h>
 
 int printHelp(){
-	int i = 0;
+	int i = 0, bytes = 0;
 	char *buf[1024];
 
 	int fd = open("help.txt", O_CREAT | O_WRONLY, 0600);
 
 	while (i = read(fd,buf,1024)){
-        bytes += i;     ;
+        bytes += i;
     }
 
 	close(fd);
