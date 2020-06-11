@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 		write(1,"argus$ ",7);
 
 		while((read_bytes = read(0,buf,100))>0){
-			if(write(fd,buf,read_bytes) < 0){
+			if(write(fd_out,buf,read_bytes) < 0){
 				perror("write");
 				exit(1);
 			}
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
 			strcat(comando, " ");
 		}
 
-		if(write(fd,comando,strlen(comando)+1) < 0){
+		if(write(fd_out,comando,strlen(comando)+1) < 0){
 			perror("write");
 			exit(1);
 		}
