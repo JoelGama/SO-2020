@@ -22,41 +22,42 @@ static char** split(char* command){
     return argv;
 }
 
-int executar(char const *command[], int argc) {
+int executar(char* command) {
 
     int status;
     int i = 1;
-    int j = argc;
+    int j = 0;
     pid_t pid;
     int cc = 0;
     int count = 0;
-    char *cmds[50];
+    char *cmds[20];
     char *cmd[20];
 
     char** argv = malloc(sizeof(char*) * 100);
 
-    char* str = "";
-    char* aux;
+    char* str;
+    char* a;
+    char aux[50];
+    strcpy(aux,command);
 
-    while(command[i] != NULL) {
+    for(i = 0; aux[i] != '\0'; i++) {
 
-        if (command[i+1] == NULL){
-            str = (char*)command[i];
-            cmds[i-1] = str;
-            str = "";
-            i++;
+        if (aux[i+1] == '\0'){
+            a = aux[i];
+            strcat(str,a);
+            cmds[j++] = str;
+            printf("%s\n",str);
             break;
         }
 
-        if (command[i] == "|"){
-            cmds[i] = str;
+        if (aux[i] == '|'){
+            cmds[j++] = str;
+            printf("%s\n",str);
             str = "";
-            i++;
         } else {
 
-
-            aux = (char*)command[i];
-            str = strcat(str,aux);
+        a = strcpy(a,aux[i]);
+        trcat(str,a);
         }
     }
     i-1;
@@ -130,7 +131,7 @@ int executar(char const *command[], int argc) {
 
 int main(int argc, char const *argv[]){
     
-    int i = executar(argv, argc-1);
+    int i = executar((char*)argv[1]);
 
     return i;
 }
