@@ -2,7 +2,7 @@
 
 char *strtok(char *str, const char *delim);
 
-static char** split(char* command){
+char** split(char* command){
 
     int i = 0;
     char** argv = malloc(sizeof(char*) * 100);
@@ -16,4 +16,21 @@ static char** split(char* command){
     argv[i] = NULL;
 
     return argv;
+}
+
+int printHelp(){
+	int i = 0, bytes = 0;
+	char *buf[1024];
+
+	int fd = open("help.txt",O_RDONLY, 0600);
+
+	while ((i = read(fd,buf,1024)) >0){
+        bytes += i;
+    }
+
+	close(fd);
+
+	write(1,buf,bytes);
+
+	return 0;
 }

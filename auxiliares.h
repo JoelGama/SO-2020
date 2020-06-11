@@ -1,10 +1,14 @@
-#ifndef NOME_H
+#ifndef AUXILIARES_H
+#define AUXILIARES_H
 
-#define auxiliares.NOME_H
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-static char** split(char* command);
+char** split(char* command);
 
+int printHelp();
 #endif
