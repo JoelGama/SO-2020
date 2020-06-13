@@ -16,7 +16,7 @@ char** splitComando(char* commando);
 
 int printHelp();
 
-int executar(char *command);
+int executar(char *command,int tempo_execucao);
 
 void removeNewLine(char *string);
 
