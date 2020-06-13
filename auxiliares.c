@@ -50,6 +50,12 @@ int printHelp(){
 	return 0;
 }
 
+void removeNewLine(char *string){
+    int i = 0;
+    while(string[i] > 30) i++;
+    string[i] = '\0';
+}
+
 int executar(char *command) {
 
     int status;

@@ -18,4 +18,6 @@ int printHelp();
 
 int executar(char *command);
 
+void removeNewLine(char *string);
+
 #endif
