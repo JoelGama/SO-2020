@@ -24,11 +24,12 @@ char** splitComando(char* commando){
     char** argv = malloc(sizeof(char*) * 100);
 
     char* c = strtok(commando," ");
+    removeNewLine(c);
     argv[i++] = strdup(c);
-    if((c = strtok(NULL, "\0"))!= NULL)
-        c = strtok(NULL,"\0");  
+    if((c = strtok(NULL, "\0"))!= NULL){
+        removeNewLine(c);
         argv[i++] = strdup(c);
-
+    }
     argv[i] = NULL;
 
     return argv;
@@ -66,8 +67,6 @@ int executar(char *command) {
 
     char** cmds = malloc(sizeof(char*) * 50);
     char** argv = malloc(sizeof(char*) * 10);
-
-    printf("Comando input: %s\n",command);
     
     cmds = split(command,"|");
 
@@ -88,7 +87,6 @@ int executar(char *command) {
     while(cmds[index] != NULL) {
         if((pid = fork()) == 0) {
 
-            printf("Next: %d\n",next);
             //if not last command
             if(cmds[next] != NULL){
                 if(dup2(fd[j + 1], 1) < 0){
@@ -112,13 +110,17 @@ int executar(char *command) {
             printf("Split do comando\n");
             argv = split(cmds[index]," ");
 
+            printf("Let's executar\n");
             execvp(argv[0], argv);
-            _exit(1);
+
+            printf("Executei!!!!\n");
 
         }
         next++;
         index++;
         j+=2;
+
+        printf("Let's executar\n");
     }
  
     /* Parent closes the pipes and wait for children */
@@ -139,7 +141,7 @@ void removeApice(char *string){
     int i = 0;
     int j = 0;
 
-    while(string [i] != NULL){
+    while(string[i] != '\0'){
         if(string[i] == 39){
             i++;
         }

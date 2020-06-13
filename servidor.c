@@ -7,8 +7,6 @@
 #include <fcntl.h>
 #include "auxiliares.h"
 
-
-
 int main(int argc,char const *argv[]){
 	static int tempo_execucao = 0;
 	static int tempo_inatividade = 0;
@@ -25,7 +23,6 @@ int main(int argc,char const *argv[]){
 		perror("open bus");
 		exit(1);
 	}
-
 
 	char buf[100];
 	int bytes_read = 0;
@@ -52,6 +49,8 @@ int main(int argc,char const *argv[]){
 			}
 			else if(strcmp(comando[0],"executar") == 0){
 				// executar a tarefa
+				removeApice(comando[1]);
+				printf("Comando a executar: %s\n",comando[1]);
 				executar(comando[1]);
 				indice_tarefa++;
 			}

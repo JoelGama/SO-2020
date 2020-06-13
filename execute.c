@@ -1,21 +1,5 @@
 #include "auxiliares.h"
 
-char** split(char* command, char* s){
-
-    int i = 0;
-    char** argv = malloc(sizeof(char*) * 100);
-
-    char* c = strtok(command,s);
-    while(c){
-        argv[i++] = strdup(c);
-        c = strtok(NULL,s);  
-    }
-
-    argv[i] = NULL;
-
-    return argv;
-}
-
 int executar(char *command) {
 
     int status;
@@ -25,8 +9,6 @@ int executar(char *command) {
 
     char** cmds = malloc(sizeof(char*) * 50);
     char** argv = malloc(sizeof(char*) * 10);
-
-    printf("Comando input: %s\n",command);
     
     cmds = split(command,"|");
 
@@ -72,8 +54,6 @@ int executar(char *command) {
             argv = split(cmds[index]," ");
 
             execvp(argv[0], argv);
-            _exit(1);
-
         }
         next++;
         index++;
