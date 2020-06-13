@@ -7,10 +7,10 @@ char** split(char* command, char* s){
     int i = 0;
     char** argv = malloc(sizeof(char*) * 100);
 
-    char* c = strtok(command, " ");
+    char* c = strtok(command,s);
     while(c){
         argv[i++] = strdup(c);
-        c = strtok(NULL," ");  
+        c = strtok(NULL,s);  
     }
 
     argv[i] = NULL;
@@ -27,7 +27,7 @@ char** splitComando(char* commando){
     argv[i++] = strdup(c);
     c = strtok(NULL,"\0");  
     argv[i++] = strdup(c);
-    
+
     argv[i] = NULL;
 
     return argv;
