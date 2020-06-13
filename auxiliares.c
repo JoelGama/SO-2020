@@ -57,7 +57,7 @@ void removeNewLine(char *string){
     while(string[i] > 30) i++;
     string[i] = '\0';
 }
-
+/*
 int executar(char *command) {
 
     int status;
@@ -122,8 +122,8 @@ int executar(char *command) {
 
         printf("Let's executar\n");
     }
- 
-    /* Parent closes the pipes and wait for children */
+    
+
     for(i = 0; i < 2 * count; i++){
         close(fd[i]);
     }
@@ -135,7 +135,7 @@ int executar(char *command) {
     free(argv);
 
     return 0;
-}
+}*/
 
 void removeApice(char *string){
     int i = 0;
@@ -154,3 +154,29 @@ void removeApice(char *string){
 
     string[j] = '\0';
 }
+
+void itoa(int n, char s[]){
+     int i, sign;
+
+     if ((sign = n) < 0)
+         n = -n;
+     i = 0;
+     do {
+         s[i++] = n % 10 + '0';
+     } while ((n /= 10) > 0);
+     if (sign < 0)
+         s[i++] = '-';
+     s[i] = '\0';
+     reverse(s);
+}  
+
+void reverse(char s[]){
+     int i, j;
+     char c;
+
+     for (i = 0, j = strlen(s)-1; i<j; i++, j--) {
+         c = s[i];
+         s[i] = s[j];
+         s[j] = c;
+     }
+} 

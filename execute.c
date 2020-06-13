@@ -78,6 +78,13 @@ int main(int argc, char const *argv[]){
     
     char* cmd = malloc(sizeof(char*) * 100);
 
+    int a = 10;
+    char s[5];
+
+    itoa(a,s);
+
+    printf("%d -> %s",a,s);
+
     for(int i = 1; i < argc; i++){
         strcat(cmd,argv[i]);
         strcat(cmd," ");

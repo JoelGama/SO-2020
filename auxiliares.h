@@ -22,4 +22,8 @@ void removeNewLine(char *string);
 
 void removeApice(char *string);
 
+void itoa(int n, char s[]);
+
+void reverse(char s[]);
+
 #endif
