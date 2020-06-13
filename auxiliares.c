@@ -25,7 +25,8 @@ char** splitComando(char* commando){
 
     char* c = strtok(commando," ");
     argv[i++] = strdup(c);
-    c = strtok(NULL,"\0");  
+    if((c = strtok(NULL, "\0"))!= NULL)
+        c = strtok(NULL,"\0");  
     argv[i++] = strdup(c);
 
     argv[i] = NULL;
