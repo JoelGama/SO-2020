@@ -20,4 +20,6 @@ int executar(char *command);
 
 void removeNewLine(char *string);
 
+void removeApice(char *string);
+
 #endif

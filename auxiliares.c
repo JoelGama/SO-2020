@@ -27,7 +27,7 @@ char** splitComando(char* commando){
     argv[i++] = strdup(c);
     if((c = strtok(NULL, "\0"))!= NULL)
         c = strtok(NULL,"\0");  
-    argv[i++] = strdup(c);
+        argv[i++] = strdup(c);
 
     argv[i] = NULL;
 
@@ -133,4 +133,22 @@ int executar(char *command) {
     free(argv);
 
     return 0;
+}
+
+void removeApice(char *string){
+    int i = 0;
+    int j = 0;
+
+    while(string [i] != NULL){
+        if(string[i] == 39){
+            i++;
+        }
+        else{
+            string[j] = string[i];
+            j++;
+            i++;
+        }
+    }
+
+    string[j] = '\0';
 }
