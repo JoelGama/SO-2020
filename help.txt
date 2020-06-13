@@ -1,6 +1,6 @@
 tempo-inactividade segs (Configura o tempo de inatividade para segs segundos)
 tempo-execucao segs 	(Configura o tempo de execução para no máximo segs segundos)
-executar 'tarefa'   	(Executa a tarefa escrita em "tarefa")
+executar 'tarefa'   	(Executa a tarefa escrita em "tarefa". Por exemplo, 'p1 | p2 | p3')
 ternima n 				(Termina a tarefa com o id n)
 historico 				(Imprime o histórico de tarefas que foram dadas como terminadas)
 listar 					(Lista as tarefas em execução)

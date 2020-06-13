@@ -2,7 +2,7 @@
 
 char *strtok(char *str, const char *delim);
 
-char** split(char* command){
+char** split(char* command, char* s){
 
     int i = 0;
     char** argv = malloc(sizeof(char*) * 100);
