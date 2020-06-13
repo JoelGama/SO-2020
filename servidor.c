@@ -51,7 +51,7 @@ int main(int argc,char const *argv[]){
 				// executar a tarefa
 				removeApice(comando[1]);
 				printf("Comando a executar: %s\n",comando[1]);
-				executar(comando[1]);
+				executar(comando[1], tempo_execucao);
 				indice_tarefa++;
 			}
 			else if(strcmp(comando[0],"terminar") == 0){

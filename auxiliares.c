@@ -58,7 +58,7 @@ void removeNewLine(char *string){
     string[i] = '\0';
 }
 
-int executar(char *command) {
+int executar(char *command,int tempo_execucao) {
 
     int status;
     int i = 0, j = 0;
@@ -81,6 +81,10 @@ int executar(char *command) {
             perror("couldn't pipe");
             exit(EXIT_FAILURE);
         }
+    }
+
+    if(tempo_execucao>0){
+        
     }
 
     j = 0, i = 0;
