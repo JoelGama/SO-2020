@@ -11,6 +11,7 @@
 int main(int argc,char const *argv[]){
 	static int tempo_execucao = 0;
 	static int tempo_inatividade = 0;
+	static int indice_tarefa = 0;
 	//Abrir o pipe que recebe informação do cliente
 	int fd_in;
 	if((fd_in = open("Cliente",O_RDONLY)) < 0){
@@ -27,10 +28,10 @@ int main(int argc,char const *argv[]){
 
 	char buf[100];
 	int bytes_read = 0;
-	char** cmd;
+	char** comando;
 	while(1){
 		while((bytes_read = read(fd_in,buf,100)) > 0){
-			cmd = split(buf);
+			comando = split(buf," ");
 			
 			if(strcmp(cmd[0],"tempo-execucao") == 0){
 				tempo_execucao = atoi(cmd[1]);
@@ -50,7 +51,8 @@ int main(int argc,char const *argv[]){
 				write(1,"To do",5);
 			}
 			else if(strcmp(cmd[0],"executar") == 0){
-				write(1,"To do",5);
+				// executar a tarefa
+				indice_tarefa++;
 			}
 			else if(strcmp(cmd[0],"terminar") == 0){
 				write(1,"To do",5);
