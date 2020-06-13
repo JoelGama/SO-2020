@@ -18,6 +18,21 @@ char** split(char* command, char* s){
     return argv;
 }
 
+char** splitComand(char* command){
+
+    int i = 0;
+    char** argv = malloc(sizeof(char*) * 100);
+
+    char* c = strtok(command," ");
+    argv[i++] = strdup(c);
+    c = strtok(NULL,'\0');  
+    argv[i++] = strdup(c);
+    
+    argv[i] = NULL;
+
+    return argv;
+}
+
 int printHelp(){
 	int i = 0, bytes = 0;
 	char *buf[1024];
