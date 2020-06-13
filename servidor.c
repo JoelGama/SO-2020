@@ -8,6 +8,7 @@
 #include "auxiliares.h"
 
 
+
 int main(int argc,char const *argv[]){
 	static int tempo_execucao = 0;
 	static int tempo_inatividade = 0;
@@ -29,32 +30,32 @@ int main(int argc,char const *argv[]){
 	char buf[100];
 	int bytes_read = 0;
 	char** comando;
+	int erro;
 	while(1){
 		while((bytes_read = read(fd_in,buf,100)) > 0){
-			comando = split(buf," ");
+			comando = splitComando(buf);
 			
-			if(strcmp(cmd[0],"tempo-execucao") == 0){
-				tempo_execucao = atoi(cmd[1]);
-				printf("%d\n",tempo_execucao);				
+			if(strcmp(comando[0],"tempo-execucao") == 0){
+				tempo_execucao = atoi(comando[1]);				
 			}
-			else if(strcmp(cmd[0],"tempo-inatividade") == 0){
-				tempo_inatividade = atoi(cmd[1]);
-				printf("%d\n",tempo_inatividade);
+			else if(strcmp(comando[0],"tempo-inatividade") == 0){
+				tempo_inatividade = atoi(comando[1]);
 			}
-			else if(strcmp(cmd[0],"ajuda") == 0){
+			else if(strcmp(comando[0],"ajuda") == 0){
 				printHelp();
 			}
-			else if(strcmp(cmd[0],"listar") == 0){
+			else if(strcmp(comando[0],"listar") == 0){
 				write(1,"To do",5);
 			}
-			else if(strcmp(cmd[0],"historico") == 0){
+			else if(strcmp(comando[0],"historico") == 0){
 				write(1,"To do",5);
 			}
-			else if(strcmp(cmd[0],"executar") == 0){
+			else if(strcmp(comando[0],"executar") == 0){
 				// executar a tarefa
+				executar(comando[1]);
 				indice_tarefa++;
 			}
-			else if(strcmp(cmd[0],"terminar") == 0){
+			else if(strcmp(comando[0],"terminar") == 0){
 				write(1,"To do",5);
 			}
 			else{
