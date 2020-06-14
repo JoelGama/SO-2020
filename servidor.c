@@ -64,7 +64,7 @@ int main(int argc,char const *argv[]){
 				printHelp();
 			}
 			else if(strcmp(comando[0],"listar") == 0){
-				listar();
+				listar(indice_tarefa);
 			}
 			else if(strcmp(comando[0],"historico") == 0){
 				historico(indice_tarefa);
