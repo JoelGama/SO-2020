@@ -68,8 +68,36 @@ void removeNewLine(char *string){
     string[i] = '\0';
 }
 
-int executar(char *command,int tempo_execucao) {
-    signal(SIGALRM,timeout_handler);
+int executar(char *command,int tempo_execucao, int indice_tarefa) {
+    if((signal(SIGALRM,timeout_handler)) < 0){
+        perror("SIGALRM Handler error");
+    }
+
+    int fd_log, fd_pids;
+    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    if((fd_pids = open("pids.txt", O_RDWR) ) < 0){
+        perror("open pids");
+		exit(1);
+    }
+
+
+    char id[10];
+    char buf[100];
+
+    itoa(indice_tarefa, id);
+
+    strcat(buf, id);
+    strcat(buf, " 0 ");
+    strcat(buf, command);
+    strcat(buf, "\n");
+
+    lseek(fd_log, 0, SEEK_END);
+
+    write(fd_log, buf, strlen(buf));
 
     int status;
     int i = 0, j = 0;
@@ -100,6 +128,10 @@ int executar(char *command,int tempo_execucao) {
         alarm(tempo_execucao);
     }
 
+    strcat(id, " ");
+    lseek(fd_pids, 0, SEEK_END);
+    write(fd_pids, id, strlen(id));
+
     j = 0, i = 0;
     while(cmds[index] != NULL) {
         if((pid = fork()) == 0) {
@@ -123,39 +155,37 @@ int executar(char *command,int tempo_execucao) {
                 close(fd[i]);
             }
 
-            printf("Split do comando\n");
             argv = split(cmds[index]," ");
 
-            printf("Let's executar\n");
             execvp(argv[0], argv);
-
-            printf("Executei!!!!\n");
-
         }
         pids[index] = pid;
+
+        id[0] = '\0';
+        itoa(pid, id);
+        strcat(id, " ");
+        write(fd_pids, id, strlen(id));
+
 
         next++;
         index++;
         j+=2;
-
-        printf("Let's executar\n");
-
     }
-
-    /**
+    pidCount = 0;
+    write(fd_pids, "\n", 1);
+    
     for(i = 0; i < count + 1; i++)
         wait(&status);
-    **/
     
     printf("Acabou\n");
     
-
     for(i = 0; i < 2 * count; i++){
         close(fd[i]);
     }
     
     free(cmds);
     free(argv);
+    free(pids);
 
     return 0;
 }

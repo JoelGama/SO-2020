@@ -7,6 +7,17 @@
 #include <fcntl.h>
 #include "auxiliares.h"
 
+/**
+ * ######Log_State######
+ * 0 -> Inacabado
+ * 1 -> Acabado
+ * 2 -> Killed by tempo-execucao
+ * 3 -> Killed by tempo-inatividade
+ * 4 -> Killed by user
+ * 
+ * id status ppid pid1 pid2 ... 'comando'
+**/
+
 int main(int argc,char const *argv[]){
 	static int tempo_execucao = 0;
 	static int tempo_inatividade = 0;
@@ -21,6 +32,18 @@ int main(int argc,char const *argv[]){
 	int fd_out;
 	if((fd_out = open("Bus",O_WRONLY)) < 0){
 		perror("open bus");
+		exit(1);
+	}
+
+	int fd_log;
+	if((fd_log = open("log.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
+		perror("open log");
+		exit(1);
+	}
+
+	int fd_pids;
+	if((fd_pids = open("pids.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
+		perror("open pids");
 		exit(1);
 	}
 
@@ -50,7 +73,7 @@ int main(int argc,char const *argv[]){
 				// executar a tarefa
 				removeApice(comando[1]);
 				if(fork()==0){
-					executar(comando[1], tempo_execucao);
+					executar(comando[1], tempo_execucao, indice_tarefa++);
 					_exit(0);
 				}
 				indice_tarefa++;

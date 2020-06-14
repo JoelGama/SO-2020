@@ -9,3 +9,5 @@ clean:
 	rm -f Cliente
 	rm -f servidor
 	rm -f Bus
+	rm -f log.txt
+	rm -f pids.txt
