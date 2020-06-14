@@ -25,4 +25,8 @@ void itoa(int n, char s[]);
 
 void reverse(char s[]);
 
+ssize_t readln(int fildes, char* line, size_t size);
+
+int terminar(int indice_tarefa, int last_indice_tarefa);
+
 #endif

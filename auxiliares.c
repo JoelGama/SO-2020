@@ -171,7 +171,7 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
         }
         pids[index] = pid;
 
-        char pid_buf[10] = "";
+        char pid_buf[12] = "";
         itoa(pid, pid_buf);
         strcat(pid_buf, " ");
         write(fd_pids, pid_buf, strlen(pid_buf));
@@ -247,10 +247,15 @@ void reverse(char s[]){
      }
 }
 
-int terminar(int indice_tarefa){
-    int fd_log;
-    if((fd_log = open("log.txt", O_RDWR) ) < 0){
-        perror("open log");
+int terminar(int indice_tarefa, int last_indice_tarefa){
+    int fd_pids;
+    if(last_indice_tarefa < indice_tarefa){
+        perror("Indice_tarefa inexistente");
+        exit(1);
+    }
+
+    if((fd_pids = open("pids.txt", O_RDWR) ) < 0){
+        perror("open pids");
 		exit(1);
     }
 
@@ -259,5 +264,31 @@ int terminar(int indice_tarefa){
 
     int i = 0;
 
-    while(i < indice_tarefa);
+    while(i < indice_tarefa){
+        bytes += readln(fd_pids, buffer, 100);
+    }
+
+    readln(fd_pids, buffer, 100);
+    char *c;
+    int pid_to_kill;
+    c = strtok(buffer, " ");
+
+    while ((c = strtok(NULL, " ")) != NULL){
+       pid_to_kill = atoi(c);
+       kill(pid_to_kill, SIGKILL);
+    }
+
+    return 0;
+} 
+
+ssize_t readln(int fildes, char* line, size_t size){
+	ssize_t n = read(fildes,line,size);
+    int i;
+
+	if(n > 0){
+		for(i = 0; i < n && line[i] != '\n'; i++);
+		lseek(fildes,-(n - i - 1), SEEK_CUR);
+        i++;
+	}	
+	return i;
 }
