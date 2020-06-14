@@ -16,13 +16,13 @@ int main(int argc,char const *argv[]){
 	static int indice_tarefa = 0;
 	//Abrir o pipe que recebe informação do cliente
 	int fd_in;
-	if((fd_in = open("Cliente",O_RDONLY)) < 0){
+	if((fd_in = open(CLIENTE,O_RDONLY)) < 0){
 		perror("open cliente");
 		exit(1);
 	}
 	//Abrir o pipe que envia informação ao cliente
 	int fd_out;
-	if((fd_out = open("Bus",O_WRONLY)) < 0){
+	if((fd_out = open(BUS,O_WRONLY)) < 0){
 		perror("open bus");
 		exit(1);
 	}
@@ -47,14 +47,14 @@ int main(int argc,char const *argv[]){
 		exit(1);
 	}
 
-	char buf[100];
+	char buf[SIZE_S];
 	int bytes_read = 0;
 	char** comando;
-	char msg[1024] = "";
+	char msg[SIZE_L] = "";
 	char aux[4] = "";
 
 	while(1){
-		while((bytes_read = read(fd_in,buf,100)) > 0){
+		while((bytes_read = read(fd_in,buf,SIZE_S)) > 0){
 			comando = splitComando(buf);
 			msg[0] = '\0';
 			

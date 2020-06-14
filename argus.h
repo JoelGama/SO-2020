@@ -10,4 +10,13 @@
 #include <fcntl.h>
 #include "auxiliares.h"
 
+// Fifos
+#define BUS "Bus"
+#define CLIENTE "Cliente"
+
+// Constantes Usuais
+#define SIZE_S 100
+#define SIZE_L 1024
+
+
 #endif

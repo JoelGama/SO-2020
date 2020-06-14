@@ -3,18 +3,18 @@
 int main(int argc, char *argv[]){
 	// Abrir o pipe que envia informação ao servidor
 	int fd_out;
-	if((fd_out = open("Cliente",O_WRONLY)) < 0){
+	if((fd_out = open(CLIENTE,O_WRONLY)) < 0){
 		perror("open cliente");
 		exit(1);
 	}
 	// Abrir o pipe que recebe informação do servidor
 	int fd_in;
-	if((fd_in = open("Bus",O_RDONLY)) < 0){
+	if((fd_in = open(BUS,O_RDONLY)) < 0){
 		perror("open bus");
 		exit(1);
 	}
 
-	char buf[100];
+	char buf[SIZE_S];
 	char *buffer = NULL;
 	int read_bytes;
 	
@@ -25,13 +25,13 @@ int main(int argc, char *argv[]){
 
 		write(1,"argus$ ",7);
 
-		while((read_bytes = read(0,buf,100))>0){
+		while((read_bytes = read(0,buf,SIZE_S))>0){
 			if(write(fd_out,buf,read_bytes) < 0){
 				perror("write");
 				exit(1);
 			}
-			buffer = (char *) malloc(1024 * sizeof(char));
-			if((read_bytes = read(fd_in, buffer, 1024)) > 0){
+			buffer = (char *) malloc(SIZE_L * sizeof(char));
+			if((read_bytes = read(fd_in, buffer, SIZE_L)) > 0){
 				write(1, buffer, read_bytes);
 			}
 			write(1,"argus$ ",7);
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 	// Caso contrário, executar o comando dado pelo cliente
 	else{
 		int i;
-		char comando[100];
+		char comando[SIZE_S];
 		for(i=1 ; i<argc ; i++){
 			strcat(comando, argv[i]);
 			strcat(comando, " ");
@@ -50,8 +50,8 @@ int main(int argc, char *argv[]){
 			perror("write");
 			exit(1);
 		}
-		buffer = (char *) malloc(1024 * sizeof(char));
-		if((read_bytes = read(fd_in, buffer, 1024)) > 0){
+		buffer = (char *) malloc(SIZE_L * sizeof(char));
+		if((read_bytes = read(fd_in, buffer, SIZE_L)) > 0){
 			write(1, buffer, read_bytes);
 		}
 	}
