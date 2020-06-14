@@ -245,4 +245,19 @@ void reverse(char s[]){
          s[i] = s[j];
          s[j] = c;
      }
-} 
+}
+
+int terminar(int indice_tarefa){
+    int fd_log;
+    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    char buffer[100];
+    off_t bytes = 0;
+
+    int i = 0;
+
+    while(i < indice_tarefa);
+}

@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-
 char** split(char* command, char* s);
 
 char** splitComando(char* commando);
