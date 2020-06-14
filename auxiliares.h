@@ -13,7 +13,7 @@ char** split(char* command, char* s);
 
 char** splitComando(char* commando);
 
-int printHelp();
+int printHelp(int fildes);
 
 int executar(char *command,int tempo_execucao, int indice_tarefa);
 
@@ -29,8 +29,8 @@ ssize_t readln(int fildes, char* line, size_t size);
 
 int terminar(int indice_tarefa, int last_indice_tarefa);
 
-int listar(int indice_tarefa);
+int listar(int indice_tarefa, int fildes);
 
-int historico(int indice_tarefa);
+int historico(int indice_tarefa, int fildes);
 
 #endif

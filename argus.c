@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
+#include "argus.h"
 
 int main(int argc, char *argv[]){
 	// Abrir o pipe que envia informação ao servidor
@@ -20,12 +14,14 @@ int main(int argc, char *argv[]){
 		exit(1);
 	}
 
+	char buf[100];
+	char *buffer = NULL;
+	int read_bytes;
+	
 	// Se o cliente não passar argumentos, executar a shell 
 	if(argc == 1){
 		write(1,"\e[1;1H\e[2J",11);
 
-		char buf[100];
-		int read_bytes;
 
 		write(1,"argus$ ",7);
 
@@ -33,6 +29,10 @@ int main(int argc, char *argv[]){
 			if(write(fd_out,buf,read_bytes) < 0){
 				perror("write");
 				exit(1);
+			}
+			buffer = (char *) malloc(1024 * sizeof(char));
+			if((read_bytes = read(fd_in, buffer, 1024)) > 0){
+				write(1, buffer, read_bytes);
 			}
 			write(1,"argus$ ",7);
 		}
@@ -49,6 +49,10 @@ int main(int argc, char *argv[]){
 		if(write(fd_out,comando,strlen(comando)+1) < 0){
 			perror("write");
 			exit(1);
+		}
+		buffer = (char *) malloc(1024 * sizeof(char));
+		if((read_bytes = read(fd_in, buffer, 1024)) > 0){
+			write(1, buffer, read_bytes);
 		}
 	}
 

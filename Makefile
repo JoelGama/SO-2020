@@ -1,13 +1,14 @@
 all:
-	gcc servidor.c auxiliares.c -Wall -o servidor
-	gcc cliente.c -Wall -o cliente
+	gcc argusd.c auxiliares.c -Wall -o argusd
+	gcc argus.c -Wall -o argus
 	mkfifo "Bus"
 	mkfifo "Cliente"
 
 clean:
-	rm -f cliente
+	rm -f argus
 	rm -f Cliente
-	rm -f servidor
+	rm -f argusd
 	rm -f Bus
 	rm -f log.txt
 	rm -f pids.txt
+	rm -f lixo.txt

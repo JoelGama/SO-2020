@@ -16,6 +16,7 @@ void timeout_handler(int signum){
 
     printf("%ld \n", lseek(fd_log, log_pos, SEEK_SET));
     write(fd_log, "2 ", 2);
+    close(fd_log);
 
     kill(getpid(),SIGKILL);
 }
@@ -55,7 +56,7 @@ char** splitComando(char* commando){
     return argv;
 }
 
-int printHelp(){
+int printHelp(int fildes){
 	int i = 0, bytes = 0;
 	char *buf[1024];
 
@@ -67,7 +68,7 @@ int printHelp(){
 
 	close(fd);
 
-	write(1,buf,bytes);
+	write(fildes,buf,bytes);
 
 	return 0;
 }
@@ -192,8 +193,6 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
     int seek = -strlen(buf) + strlen(id);
     lseek(fd_log, seek , SEEK_CUR);
     write(fd_log, "1 ", 2);
-
-    printf("Acabou\n");
     
     for(i = 0; i < 2 * count; i++){
         close(fd[i]);
@@ -202,6 +201,9 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
     free(cmds);
     free(argv);
     free(pids);
+
+    close(fd_log);
+    close(fd_pids);
 
     return 0;
 }
@@ -253,13 +255,11 @@ void reverse(char s[]){
 int terminar(int indice_tarefa, int last_indice_tarefa){
     int fd_pids;
     if(last_indice_tarefa <= indice_tarefa){
-        perror("Indice_tarefa inexistente");
-        exit(1);
+        return(1);
     }
 
     if((fd_pids = open("pids.txt", O_RDWR) ) < 0){
-        perror("open pids");
-		exit(1);
+		exit(2);
     }
 
     char buffer[100];
@@ -273,24 +273,19 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     }
 
     removeNewLine(buffer);
-    //
-    puts(buffer);
     char *c;
     int pid_to_kill;
     c = strtok(buffer, " ");
     int indice_offset = strlen(c) + 1;
 
     while ((c = strtok(NULL, " ")) != NULL){
-        //
-        puts(c);
         pid_to_kill = atoi(c);
         kill(pid_to_kill, SIGKILL);
     }
 
     int fd_log;
     if((fd_log = open("log.txt", O_RDWR) ) < 0){
-        perror("open log");
-		exit(1);
+		exit(3);
     }
 
     bytes = 0;
@@ -302,13 +297,23 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     }
 
     lseek(fd_log, indice_offset, SEEK_CUR);
+    char status[2];
+    read(fd_log, status, 1);
+
+    if(atoi(status) != 0){
+        return(4);
+    }
+
+    lseek(fd_log, -1, SEEK_CUR);
     write(fd_log, "4", 1);
 
+    close(fd_pids);
+    close(fd_log);
 
     return 0;
 } 
 
-int listar(int indice_tarefa){
+int listar(int indice_tarefa,int fildes){
 
     char *buf = NULL;
     char atual[100];
@@ -316,6 +321,7 @@ int listar(int indice_tarefa){
     int fd_log;
     int bytes = 0;
     int i = 0;
+    int nProcessos = 0;
 
     buf = malloc(sizeof(char) * 1024);
 
@@ -343,19 +349,21 @@ int listar(int indice_tarefa){
 
             strcat(toWrite,"\n");
             strcat(buf,toWrite);
+            nProcessos++;
         }
 
         free(toWrite);
     }
-    write(1,buf,strlen(buf));
+    if(nProcessos > 0) write(fildes,buf,strlen(buf));
+    else return 2;
 
     free(buf);
+    close(fd_log);
         
     return 0;
 }
 
-
-int historico(int indice_tarefa){
+int historico(int indice_tarefa, int fildes){
 
     char *buf = NULL;
     char atual[100];
@@ -363,6 +371,7 @@ int historico(int indice_tarefa){
     int fd_log;
     int bytes = 0;
     int i = 0;
+    int nProcessos = 0;
 
     buf = malloc(sizeof(char) * 1024);
 
@@ -404,13 +413,16 @@ int historico(int indice_tarefa){
             strcat(toWrite,s3);
             strcat(toWrite,"\n");
             strcat(buf,toWrite);
+            nProcessos ++;
         }
 
         free(toWrite);
     }
-    write(1,buf,strlen(buf));
+    if(nProcessos > 0) write(fildes,buf,strlen(buf));
+    else return 2;
 
     free(buf);
+    close(fd_log);
         
     return 0;
 }
