@@ -26,4 +26,8 @@ void itoa(int n, char s[]);
 
 void reverse(char s[]);
 
+int listar();
+
+int historico(int indice_tarefa);
+
 #endif

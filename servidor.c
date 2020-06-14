@@ -64,10 +64,10 @@ int main(int argc,char const *argv[]){
 				printHelp();
 			}
 			else if(strcmp(comando[0],"listar") == 0){
-				write(1,"To do",5);
+				listar();
 			}
 			else if(strcmp(comando[0],"historico") == 0){
-				write(1,"To do",5);
+				historico(indice_tarefa);
 			}
 			else if(strcmp(comando[0],"executar") == 0){
 				// executar a tarefa
