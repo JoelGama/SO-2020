@@ -1,5 +1,15 @@
 #include "auxiliares.h"
 
+int *pids;
+int pidCount;
+
+void timeout_handler(int signum){
+    for(int i=0; i<pidCount; i++){
+        kill(pids[i],SIGKILL);
+    }
+    kill(getpid(),SIGKILL);
+}
+
 char *strtok(char *str, const char *delim);
 
 char** split(char* command, char* s){
@@ -59,6 +69,7 @@ void removeNewLine(char *string){
 }
 
 int executar(char *command,int tempo_execucao) {
+    signal(SIGALRM,timeout_handler);
 
     int status;
     int i = 0, j = 0;
@@ -83,14 +94,15 @@ int executar(char *command,int tempo_execucao) {
         }
     }
 
+    pidCount=count;
+    pids = malloc(sizeof(int)*pidCount);
     if(tempo_execucao>0){
-        
+        alarm(tempo_execucao);
     }
 
     j = 0, i = 0;
     while(cmds[index] != NULL) {
         if((pid = fork()) == 0) {
-
             //if not last command
             if(cmds[next] != NULL){
                 if(dup2(fd[j + 1], 1) < 0){
@@ -120,6 +132,8 @@ int executar(char *command,int tempo_execucao) {
             printf("Executei!!!!\n");
 
         }
+        pids[index] = pid;
+
         next++;
         index++;
         j+=2;
@@ -131,10 +145,10 @@ int executar(char *command,int tempo_execucao) {
     for(i = 0; i < 2 * count; i++){
         close(fd[i]);
     }
-
+    
     for(i = 0; i < count + 1; i++)
         wait(&status);
-
+    
     free(cmds);
     free(argv);
 

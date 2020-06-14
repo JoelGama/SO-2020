@@ -27,7 +27,6 @@ int main(int argc,char const *argv[]){
 	char buf[100];
 	int bytes_read = 0;
 	char** comando;
-	int erro;
 	while(1){
 		while((bytes_read = read(fd_in,buf,100)) > 0){
 			comando = splitComando(buf);
@@ -50,7 +49,10 @@ int main(int argc,char const *argv[]){
 			else if(strcmp(comando[0],"executar") == 0){
 				// executar a tarefa
 				removeApice(comando[1]);
-				executar(comando[1], tempo_execucao);
+				if(fork()==0){
+					executar(comando[1], tempo_execucao);
+					_exit(0);
+				}
 				indice_tarefa++;
 			}
 			else if(strcmp(comando[0],"terminar") == 0){
