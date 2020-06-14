@@ -310,138 +310,108 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
 
 int listar(int indice_tarefa){
 
-    char buf[1024];
+    char *buf = NULL;
     char atual[100];
-    char *toWrite = "";
+    char *toWrite = NULL;
     int fd_log;
     int bytes = 0;
+    int i = 0;
 
-    char** ind = malloc(sizeof(char*) * 50);
+    buf = malloc(sizeof(char) * 1024);
 
     if((fd_log = open("log.txt", O_RDONLY) ) < 0){
         perror("open log");
 		exit(1);
     }
 
-    for(int i = 0; i < indice_tarefa; i++){
-        if((bytes = readln(fd_log,atual,100)) > 0){
-            
-            printf("Atual: %s\n",atual);
-            
-            char* s1 = strtok(atual," ");
-            char* s2 = strtok(NULL," ");
-            char* s3 = strtok(NULL,"\0");
-            
-            printf("S1: %s\n",s1);
-            printf("S2: %s\n",s2);
-            printf("S3: %s\n",s3);
-
-            if(strcmp(s2,"0") == 0){
-                printf("Comparei");
-                strcat(toWrite,"#");
-                strcat(toWrite,ind[0]);
-                strcat(toWrite," em execução ");
-
-                strcat(toWrite,ind[2]);
-
-                strcat(toWrite,"\n");
-                strcat(buf,toWrite);
-            }
-        }
-    }
-    printf("teriminei");
-    free(ind);
-    write(1,buf,strlen(buf));
+    while((bytes = readln(fd_log,atual,100)) > 0 && i++ < indice_tarefa){
         
-    return 0;
-}
+        toWrite = malloc(sizeof(char) * 100);
+            
+        char* s1 = strtok(atual," ");
+        char* s2 = strtok(NULL," ");
+        char* s3 = strtok(NULL,"\n");
 
-int historico(int indice_tarefa){
+        int x = atoi(s2);
 
-    char buf[1024];
-    char *atual = "";
-    char *toWrite = "";
-    int j;
+        if(x == 0){
+            strcat(toWrite,"#");
+            strcat(toWrite,s1);
+            strcat(toWrite," em execução: ");
 
-    printf("Aqui");
-
-    char** ind = malloc(sizeof(char*) * 50);
-
-    printf("Aqui 2");
-
-    int fd_log;
-    if((fd_log = open("log.txt", O_RDWR) ) < 0){
-        perror("open log");
-		exit(1);
-    }
-
-    printf("Aqui 3");
-
-    for(int i = 0; i < indice_tarefa; i++){
-
-        printf("Aqui 4");
-        read(fd_log,atual,100);
-        ind = split(atual," ");
-
-        printf("Aqui 5");
-
-        int x = atoi(ind[1]);
-        printf("%d",x);
-
-        switch(x){
-            case(1):
-                strcat(toWrite,"#");
-                strcat(toWrite,ind[0]);
-                strcat(toWrite," terminado ");
-                j = 2;
-                while(ind[j] != NULL){
-                    strcat(toWrite,ind[j]);
-                    strcat(toWrite," ");
-                }
-                break;
-            case(2):
-                strcat(toWrite,"#");
-                strcat(toWrite,ind[0]);
-                strcat(toWrite," tempo de execução ");
-                j = 2;
-                while(ind[j] != NULL){
-                    strcat(toWrite,ind[j]);
-                    strcat(toWrite," ");
-                }
-                break;
-
-            case(3):
-                strcat(toWrite,"#");
-                strcat(toWrite,ind[0]);
-                strcat(toWrite," tempo de inatividade ");
-                j = 2;
-                while(ind[j] != NULL){
-                    strcat(toWrite,ind[j]);
-                    strcat(toWrite," ");
-                }
-                break;
-
-            case(4):
-                strcat(toWrite,"#");
-                strcat(toWrite,ind[0]);
-                strcat(toWrite," terminado pelo utilizador ");
-                j = 2;
-                while(ind[j] != NULL){
-                    strcat(toWrite,ind[j]);
-                    strcat(toWrite," ");
-                }
-                break;
-
-            default:
-                break;
+            strcat(toWrite,s3);
 
             strcat(toWrite,"\n");
             strcat(buf,toWrite);
         }
+
+        free(toWrite);
     }
-    free(ind);
     write(1,buf,strlen(buf));
-    
+
+    free(buf);
+        
+    return 0;
+}
+
+
+int historico(int indice_tarefa){
+
+    char *buf = NULL;
+    char atual[100];
+    char *toWrite = NULL;
+    int fd_log;
+    int bytes = 0;
+    int i = 0;
+
+    buf = malloc(sizeof(char) * 1024);
+
+    if((fd_log = open("log.txt", O_RDONLY) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    while((bytes = readln(fd_log,atual,100)) > 0 && i++ < indice_tarefa){
+        
+        toWrite = malloc(sizeof(char) * 100);
+            
+        char* s1 = strtok(atual," ");
+        char* s2 = strtok(NULL," ");
+        char* s3 = strtok(NULL,"\n");
+
+        int x = atoi(s2);
+
+        if(x != 0){
+            strcat(toWrite,"#");
+            strcat(toWrite,s1);
+            switch(x){
+                case 1:
+                    strcat(toWrite," terminou: ");
+                    break;
+                case 2:
+                    strcat(toWrite," max execução: ");
+                    break;
+                case 3:
+                    strcat(toWrite," max inatividade: ");
+                    break;
+                case 4:
+                    strcat(toWrite," morto pelo utilizador: ");
+                    break;
+                default:
+                    break;
+            }
+
+            strcat(toWrite,s3);
+            strcat(toWrite,"\n");
+            strcat(buf,toWrite);
+        }
+
+        free(toWrite);
+    }
+    write(1,buf,strlen(buf));
+
+    free(buf);
+        
     return 0;
 }
 
