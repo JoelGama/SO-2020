@@ -125,15 +125,20 @@ int executar(char *command,int tempo_execucao) {
         j+=2;
 
         printf("Let's executar\n");
+
     }
+
+    /**
+    for(i = 0; i < count + 1; i++)
+        wait(&status);
+    **/
+    
+    printf("Acabou\n");
     
 
     for(i = 0; i < 2 * count; i++){
         close(fd[i]);
     }
-
-    for(i = 0; i < count + 1; i++)
-        wait(&status);
 
     free(cmds);
     free(argv);
