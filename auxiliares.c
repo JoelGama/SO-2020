@@ -308,60 +308,48 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     return 0;
 } 
 
-ssize_t readln(int fildes, char* line, size_t size){
-	ssize_t n = read(fildes,line,size);
-    int i;
-
-	if(n > 0){
-		for(i = 0; i < n && line[i] != '\n'; i++);
-		lseek(fildes,-(n - i - 1), SEEK_CUR);
-        i++;
-	}	
-	return i;
-}
-
-int listar(){
+int listar(int indice_tarefa){
 
     char buf[1024];
-    char *atual = "";
+    char atual[100];
     char *toWrite = "";
-    int j;
-    int n;
     int fd_log;
-
-    printf("   A");
+    int bytes = 0;
 
     char** ind = malloc(sizeof(char*) * 50);
 
-    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+    if((fd_log = open("log.txt", O_RDONLY) ) < 0){
         perror("open log");
 		exit(1);
     }
 
-    printf("   B");
+    for(int i = 0; i < indice_tarefa; i++){
+        if((bytes = readln(fd_log,atual,100)) > 0){
+            
+            printf("Atual: %s\n",atual);
+            
+            char* s1 = strtok(atual," ");
+            char* s2 = strtok(NULL," ");
+            char* s3 = strtok(NULL,"\0");
+            
+            printf("S1: %s\n",s1);
+            printf("S2: %s\n",s2);
+            printf("S3: %s\n",s3);
 
-    while((n = read(fd_log,atual,100) > 0)){
+            if(strcmp(s2,"0") == 0){
+                printf("Comparei");
+                strcat(toWrite,"#");
+                strcat(toWrite,ind[0]);
+                strcat(toWrite," em execução ");
 
-        printf("   C");
+                strcat(toWrite,ind[2]);
 
-        ind = split(atual,":");
-        char *s = ind[1];
-
-        printf("   D");
-
-        if(s == "0"){
-            strcat(toWrite,"#");
-            strcat(toWrite,ind[0]);
-            strcat(toWrite," em execução ");
-            j = 2;
-            while(ind[j] != NULL){
-                strcat(toWrite,ind[j]);
-                strcat(toWrite," ");
+                strcat(toWrite,"\n");
+                strcat(buf,toWrite);
             }
-            strcat(toWrite,"\n");
-            strcat(buf,toWrite);
         }
     }
+    printf("teriminei");
     free(ind);
     write(1,buf,strlen(buf));
         
@@ -455,4 +443,15 @@ int historico(int indice_tarefa){
     write(1,buf,strlen(buf));
     
     return 0;
+}
+
+ssize_t readln(int fildes, char* line, size_t size){
+	ssize_t n = read(fildes,line,size);
+    int i;
+	if(n > 0){
+		for(i = 0; i < n && line[i] != '\n'; i++);
+		lseek(fildes,-(n - i - 1), SEEK_CUR);
+        i++;
+	}	
+	return i;
 }
