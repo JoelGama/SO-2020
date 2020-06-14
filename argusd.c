@@ -59,11 +59,14 @@ int main(int argc,char const *argv[]){
 			msg[0] = '\0';
 			
 			if(strcmp(comando[0],"tempo-execucao") == 0){
-				tempo_execucao = atoi(comando[1]);
-				strcat(msg, "Tempo de execucao alterado para: ");
-				strcat(msg, comando[1]);
-				strcat(msg, "!\n");
-				write(fd_out, msg, strlen(msg));				
+				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);
+				else{
+					tempo_execucao = atoi(comando[1]);
+					strcat(msg, "Tempo de execucao alterado para: ");
+					strcat(msg, comando[1]);
+					strcat(msg, "!\n");
+					write(fd_out, msg, strlen(msg));
+				}				
 			}
 			else if(strcmp(comando[0],"tempo-inatividade") == 0){
 				/*
