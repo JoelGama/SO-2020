@@ -15,7 +15,7 @@
  * 3 -> Killed by tempo-inatividade
  * 4 -> Killed by user
  * 
- * id status ppid pid1 pid2 ... 'comando'
+ * id status 'comando'
 **/
 
 int main(int argc,char const *argv[]){

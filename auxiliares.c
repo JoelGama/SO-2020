@@ -252,7 +252,7 @@ void reverse(char s[]){
 
 int terminar(int indice_tarefa, int last_indice_tarefa){
     int fd_pids;
-    if(last_indice_tarefa < indice_tarefa){
+    if(last_indice_tarefa <= indice_tarefa){
         perror("Indice_tarefa inexistente");
         exit(1);
     }
@@ -273,12 +273,16 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     }
 
     removeNewLine(buffer);
+    //
+    puts(buffer);
     char *c;
     int pid_to_kill;
     c = strtok(buffer, " ");
     int indice_offset = strlen(c) + 1;
 
     while ((c = strtok(NULL, " ")) != NULL){
+        //
+        puts(c);
         pid_to_kill = atoi(c);
         kill(pid_to_kill, SIGKILL);
     }
