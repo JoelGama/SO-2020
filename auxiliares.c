@@ -2,11 +2,21 @@
 
 int *pids;
 int pidCount;
+off_t log_pos;
 
 void timeout_handler(int signum){
     for(int i=0; i<pidCount; i++){
         kill(pids[i],SIGKILL);
     }
+    int fd_log;
+    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    printf("%ld \n", lseek(fd_log, log_pos, SEEK_SET));
+    write(fd_log, "2 ", 2);
+
     kill(getpid(),SIGKILL);
 }
 
@@ -95,9 +105,9 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
     strcat(buf, command);
     strcat(buf, "\n");
 
-    lseek(fd_log, 0, SEEK_END);
-
+    log_pos = lseek(fd_log, 0, SEEK_END);
     write(fd_log, buf, strlen(buf));
+    log_pos += strlen(id) + 1;
 
     int status;
     int i = 0, j = 0;
@@ -161,11 +171,10 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
         }
         pids[index] = pid;
 
-        id[0] = '\0';
-        itoa(pid, id);
-        strcat(id, " ");
-        write(fd_pids, id, strlen(id));
-
+        char pid_buf[10] = "";
+        itoa(pid, pid_buf);
+        strcat(pid_buf, " ");
+        write(fd_pids, pid_buf, strlen(pid_buf));
 
         next++;
         index++;
@@ -177,6 +186,10 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
     for(i = 0; i < count + 1; i++)
         wait(&status);
     
+    int seek = -strlen(buf) + strlen(id);
+    lseek(fd_log, seek , SEEK_CUR);
+    write(fd_log, "1 ", 2);
+
     printf("Acabou\n");
     
     for(i = 0; i < 2 * count; i++){
