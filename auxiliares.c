@@ -141,6 +141,7 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
     strcat(id, " ");
     lseek(fd_pids, 0, SEEK_END);
     write(fd_pids, id, strlen(id));
+    char pid_buf[12] = "";
 
     j = 0, i = 0;
     while(cmds[index] != NULL) {
@@ -171,7 +172,6 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
         }
         pids[index] = pid;
 
-        char pid_buf[12] = "";
         itoa(pid, pid_buf);
         strcat(pid_buf, " ");
         write(fd_pids, pid_buf, strlen(pid_buf));
@@ -181,7 +181,10 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
         j+=2;
     }
     pidCount = 0;
-    write(fd_pids, "\n", 1);
+    
+    itoa(getpid(), pid_buf);
+    strcat(pid_buf, "\n");
+    write(fd_pids, pid_buf, strlen(pid_buf));
     
     for(i = 0; i < count + 1; i++)
         wait(&status);
@@ -264,19 +267,39 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
 
     int i = 0;
 
-    while(i < indice_tarefa){
+    while(i <= indice_tarefa){
         bytes += readln(fd_pids, buffer, 100);
+        i++;
     }
 
-    readln(fd_pids, buffer, 100);
+    removeNewLine(buffer);
     char *c;
     int pid_to_kill;
     c = strtok(buffer, " ");
+    int indice_offset = strlen(c) + 1;
 
     while ((c = strtok(NULL, " ")) != NULL){
-       pid_to_kill = atoi(c);
-       kill(pid_to_kill, SIGKILL);
+        pid_to_kill = atoi(c);
+        kill(pid_to_kill, SIGKILL);
     }
+
+    int fd_log;
+    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    bytes = 0;
+    i = 0;
+
+    while(i < indice_tarefa){
+        bytes += readln(fd_log, buffer, 100);
+        i++;
+    }
+
+    lseek(fd_log, indice_offset, SEEK_CUR);
+    write(fd_log, "4", 1);
+
 
     return 0;
 } 
