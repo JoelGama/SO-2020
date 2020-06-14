@@ -246,3 +246,15 @@ void reverse(char s[]){
          s[j] = c;
      }
 } 
+
+ssize_t readln(int fildes, char* line, size_t size){
+	ssize_t n = read(fildes,line,size);
+    int i;
+
+	if(n > 0){
+		for(i = 0; i < n && line[i] != '\n'; i++);
+		lseek(fildes,-(n - i - 1), SEEK_CUR);
+        i++;
+	}	
+	return i;
+}
