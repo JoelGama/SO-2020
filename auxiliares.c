@@ -171,7 +171,7 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
         }
         pids[index] = pid;
 
-        char pid_buf[10] = "";
+        char pid_buf[12] = "";
         itoa(pid, pid_buf);
         strcat(pid_buf, " ");
         write(fd_pids, pid_buf, strlen(pid_buf));
@@ -245,6 +245,40 @@ void reverse(char s[]){
          s[i] = s[j];
          s[j] = c;
      }
+}
+
+int terminar(int indice_tarefa, int last_indice_tarefa){
+    int fd_pids;
+    if(last_indice_tarefa < indice_tarefa){
+        perror("Indice_tarefa inexistente");
+        exit(1);
+    }
+
+    if((fd_pids = open("pids.txt", O_RDWR) ) < 0){
+        perror("open pids");
+		exit(1);
+    }
+
+    char buffer[100];
+    off_t bytes = 0;
+
+    int i = 0;
+
+    while(i < indice_tarefa){
+        bytes += readln(fd_pids, buffer, 100);
+    }
+
+    readln(fd_pids, buffer, 100);
+    char *c;
+    int pid_to_kill;
+    c = strtok(buffer, " ");
+
+    while ((c = strtok(NULL, " ")) != NULL){
+       pid_to_kill = atoi(c);
+       kill(pid_to_kill, SIGKILL);
+    }
+
+    return 0;
 } 
 
 ssize_t readln(int fildes, char* line, size_t size){
@@ -259,3 +293,139 @@ ssize_t readln(int fildes, char* line, size_t size){
 	return i;
 }
 
+int listar(){
+
+    char buf[1024];
+    char *atual = "";
+    char *toWrite = "";
+    int j;
+    int n;
+    int fd_log;
+
+    printf("   A");
+
+    char** ind = malloc(sizeof(char*) * 50);
+
+    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    printf("   B");
+
+    while((n = read(fd_log,atual,100) > 0)){
+
+        printf("   C");
+
+        ind = split(atual,":");
+        char *s = ind[1];
+
+        printf("   D");
+
+        if(s == "0"){
+            strcat(toWrite,"#");
+            strcat(toWrite,ind[0]);
+            strcat(toWrite," em execução ");
+            j = 2;
+            while(ind[j] != NULL){
+                strcat(toWrite,ind[j]);
+                strcat(toWrite," ");
+            }
+            strcat(toWrite,"\n");
+            strcat(buf,toWrite);
+        }
+    }
+    free(ind);
+    write(1,buf,strlen(buf));
+        
+    return 0;
+}
+
+int historico(int indice_tarefa){
+
+    char buf[1024];
+    char *atual = "";
+    char *toWrite = "";
+    int j;
+
+    printf("Aqui");
+
+    char** ind = malloc(sizeof(char*) * 50);
+
+    printf("Aqui 2");
+
+    int fd_log;
+    if((fd_log = open("log.txt", O_RDWR) ) < 0){
+        perror("open log");
+		exit(1);
+    }
+
+    printf("Aqui 3");
+
+    for(int i = 0; i < indice_tarefa; i++){
+
+        printf("Aqui 4");
+        read(fd_log,atual,100);
+        ind = split(atual," ");
+
+        printf("Aqui 5");
+
+        int x = atoi(ind[1]);
+        printf("%d",x);
+
+        switch(x){
+            case(1):
+                strcat(toWrite,"#");
+                strcat(toWrite,ind[0]);
+                strcat(toWrite," terminado ");
+                j = 2;
+                while(ind[j] != NULL){
+                    strcat(toWrite,ind[j]);
+                    strcat(toWrite," ");
+                }
+                break;
+            case(2):
+                strcat(toWrite,"#");
+                strcat(toWrite,ind[0]);
+                strcat(toWrite," tempo de execução ");
+                j = 2;
+                while(ind[j] != NULL){
+                    strcat(toWrite,ind[j]);
+                    strcat(toWrite," ");
+                }
+                break;
+
+            case(3):
+                strcat(toWrite,"#");
+                strcat(toWrite,ind[0]);
+                strcat(toWrite," tempo de inatividade ");
+                j = 2;
+                while(ind[j] != NULL){
+                    strcat(toWrite,ind[j]);
+                    strcat(toWrite," ");
+                }
+                break;
+
+            case(4):
+                strcat(toWrite,"#");
+                strcat(toWrite,ind[0]);
+                strcat(toWrite," terminado pelo utilizador ");
+                j = 2;
+                while(ind[j] != NULL){
+                    strcat(toWrite,ind[j]);
+                    strcat(toWrite," ");
+                }
+                break;
+
+            default:
+                break;
+
+            strcat(toWrite,"\n");
+            strcat(buf,toWrite);
+        }
+    }
+    free(ind);
+    write(1,buf,strlen(buf));
+    
+    return 0;
+}

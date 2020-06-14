@@ -79,7 +79,7 @@ int main(int argc,char const *argv[]){
 				indice_tarefa++;
 			}
 			else if(strcmp(comando[0],"terminar") == 0){
-				write(1,"To do",5);
+				terminar(atoi(comando[1]), indice_tarefa);
 			}
 			else{
 				write(1,"invalido\n",9);
