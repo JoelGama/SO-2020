@@ -11,4 +11,4 @@ clean:
 	rm -f Bus
 	rm -f log.txt
 	rm -f pids.txt
-	rm -f lixo.txt
+	rm -f output.txt

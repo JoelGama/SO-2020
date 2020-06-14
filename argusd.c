@@ -28,8 +28,8 @@ int main(int argc,char const *argv[]){
 	}
 
 	int fd_lixo;
-	if((fd_lixo = open("lixo.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
-		perror("open lixo");
+	if((fd_lixo = open("output.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
+		perror("open output");
 		exit(1);
 	}
 	dup2(fd_lixo, 1);
@@ -87,39 +87,50 @@ int main(int argc,char const *argv[]){
 				if (historico(indice_tarefa, fd_out) == 2) write(fd_out, "Nao existem tarefas terminadas!\n",32);
 			}
 			else if(strcmp(comando[0],"executar") == 0){
-				strcat(msg, "Nova tarefa #");
-				itoa(indice_tarefa, aux);
-				strcat(msg, aux);
-				strcat(msg, "\n");
-				write(fd_out, msg, strlen(msg));
+				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);
+				else{
+					strcat(msg, "Nova tarefa #");
+					itoa(indice_tarefa, aux);
+					strcat(msg, aux);
+					strcat(msg, "\n");
+					write(fd_out, msg, strlen(msg));
 
-				removeApice(comando[1]);
+					removeApice(comando[1]);
 
-				if(fork()==0){
-					executar(comando[1], tempo_execucao, indice_tarefa++);
-					_exit(0);
+					if(fork()==0){
+						executar(comando[1], tempo_execucao, indice_tarefa++);
+						_exit(0);
+					}
+					indice_tarefa++;
 				}
-				indice_tarefa++;
 			}
 			else if(strcmp(comando[0],"terminar") == 0){
-				switch(terminar(atoi(comando[1]), indice_tarefa)){
-					case 0: 
-						write(fd_out, "Tarefa terminada com sucesso!\n", 30);
-						break;
-					case 1: 
-						write(fd_out, "Indicie invalido!\n",18);
-						break;
-					case 2: 
-						write(fd_out, "Erro ao abrir o ficheiro pids.txt!\n",35);
-						break;
-					case 3: 
-						write(fd_out, "Erro ao abrir o ficheiro log.txt!\n",34);
-						break;
-					case 4:
-						write(fd_out, "A tarefa nao esta em execucao!\n", 31);
-						break;
-					default:
-						break;	
+				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);
+				else{
+					switch(terminar(atoi(comando[1]), indice_tarefa)){
+						case 0: 
+							write(fd_out, "Tarefa terminada com sucesso!\n", 30);
+							break;
+						case 1: 
+							write(fd_out, "Indicie invalido!\n",18);
+							break;
+						case 2: 
+							write(fd_out, "Erro ao abrir o ficheiro pids.txt!\n",35);
+							break;
+						case 3: 
+							write(fd_out, "Erro ao abrir o ficheiro log.txt!\n",34);
+							break;
+						case 4:
+							write(fd_out, "A tarefa nao esta em execucao!\n", 31);
+							break;
+						default:
+							break;	
+				}
+				}
+			}else if(strcmp(comando[0],"output") == 0){
+				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);
+				else{
+					
 				}
 			}
 			else{
@@ -132,4 +143,6 @@ int main(int argc,char const *argv[]){
 	close(fd_out);
 	close(fd_in);
 	close(fd_pids);
+
+	return 0;
 }
