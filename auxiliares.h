@@ -29,6 +29,6 @@ ssize_t readln(int fildes, char* line, size_t size);
 
 int terminar(int indice_tarefa, int last_indice_tarefa);
 
-int listarHistorico(int indice_tarefa, int fildes,int arg);
+int listarTarefas(int indice_tarefa, int fildes,int arg);
 
 #endif

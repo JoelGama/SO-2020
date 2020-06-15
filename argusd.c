@@ -1,4 +1,8 @@
 #include "argus.h"
+
+#define EM_EXECUCAO 0
+#define TERMINADAS 1
+
 /**
  * ######Log_State######
  * 0 -> Inacabado
@@ -81,10 +85,10 @@ int main(int argc,char const *argv[]){
 				printHelp(fd_out);
 			}
 			else if(strcmp(comando[0],"listar") == 0){
-				if (listarHistorico(indice_tarefa, fd_out,0) == 2) write(fd_out, "Nao existem tarefas em execucao!\n",34);
+				if (listarTarefas(indice_tarefa, fd_out,EM_EXECUCAO) == 2) write(fd_out, "Nao existem tarefas em execucao!\n",34);
 			}
 			else if(strcmp(comando[0],"historico") == 0){
-				if (listarHistorico(indice_tarefa, fd_out,1) == 2) write(fd_out, "Nao existem tarefas terminadas!\n",32);
+				if (listarTarefas(indice_tarefa, fd_out,TERMINADAS) == 2) write(fd_out, "Nao existem tarefas terminadas!\n",32);
 			}
 			else if(strcmp(comando[0],"executar") == 0){
 				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);

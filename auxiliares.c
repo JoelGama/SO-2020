@@ -313,7 +313,7 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     return 0;
 } 
 
-int listarHistorico(int indice_tarefa, int fildes, int arg){
+int listarTarefas(int indice_tarefa, int fildes, int arg){
 
     char *buf = NULL;
     char atual[100];
