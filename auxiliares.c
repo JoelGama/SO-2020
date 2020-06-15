@@ -1,9 +1,18 @@
 #include "auxiliares.h"
 
+/** 
+ * *pids    - Array com os pids da tarefa em execução
+ * pidCount - Número de pids guardado no array anterior
+ * log_pos  - Posição do estado da tarefa atual no ficheiro de logs
+ **/
 int *pids;
 int pidCount;
 off_t log_pos;
 
+/** 
+ * Função responsável por estabelecer um
+ * comportamento para o sinal SIGALRM
+ **/
 void timeout_handler(int signum){
     for(int i=0; i<pidCount; i++){
         kill(pids[i],SIGKILL);
@@ -21,8 +30,10 @@ void timeout_handler(int signum){
     kill(getpid(),SIGKILL);
 }
 
-char *strtok(char *str, const char *delim);
-
+/** 
+ * Função auxiliar responsável por separar uma 
+ * string segundo um caracter dado como argumento
+ **/
 char** split(char* command, char* s){
 
     int i = 0;
@@ -39,6 +50,11 @@ char** split(char* command, char* s){
     return argv;
 }
 
+/** 
+ * Função auxiliar responsável por separar uma 
+ * string comando conhecendo as posições pré 
+ * definidas dos parâmetros 
+ **/
 char** splitComando(char* commando){
 
     int i = 0;
@@ -56,6 +72,10 @@ char** splitComando(char* commando){
     return argv;
 }
 
+/** 
+ * Função responsável por imprimir a ajuda 
+ * para o cliente
+ **/
 int printHelp(int fildes){
 	int i = 0, bytes = 0;
 	char *buf[1024];
@@ -73,12 +93,20 @@ int printHelp(int fildes){
 	return 0;
 }
 
+/** 
+ * Função auxiliar responsável por remover
+ * new lines ('\n') de uma string
+ **/
 void removeNewLine(char *string){
     int i = 0;
     while(string[i] > 30) i++;
     string[i] = '\0';
 }
 
+/** 
+ * Função responsável por executar as tarefas
+ * passadas como argumento
+ **/
 int executar(char *command,int tempo_execucao, int indice_tarefa) {
     if((signal(SIGALRM,timeout_handler)) < 0){
         perror("SIGALRM Handler error");
@@ -208,6 +236,10 @@ int executar(char *command,int tempo_execucao, int indice_tarefa) {
     return 0;
 }
 
+/** 
+ * Função auxiliar responsável por remover os 
+ * caracteres "''" (ápice) de uma string
+ **/
 void removeApice(char *string){
     int i = 0;
     int j = 0;
@@ -226,6 +258,10 @@ void removeApice(char *string){
     string[j] = '\0';
 }
 
+/** 
+ * Função auxiliar responsável por converter
+ * um interiro para alfanumérico
+ **/
 void itoa(int n, char s[]){
      int i, sign;
 
@@ -241,6 +277,9 @@ void itoa(int n, char s[]){
      reverse(s);
 }  
 
+/** 
+ * Função auxiliar utilizada na função itoa
+ **/
 void reverse(char s[]){
      int i, j;
      char c;
@@ -252,6 +291,9 @@ void reverse(char s[]){
      }
 }
 
+/** 
+ * Função responsável por terminar uma dada tarefa
+ **/
 int terminar(int indice_tarefa, int last_indice_tarefa){
     int fd_pids;
     if(last_indice_tarefa <= indice_tarefa){
@@ -313,6 +355,11 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     return 0;
 } 
 
+/** 
+ * Função responsável por listar tarefas em 
+ * execução ou terminadas (decidido segundo 
+ * um argumento passado)
+ **/
 int listarTarefas(int indice_tarefa, int fildes, int arg){
 
     char *buf = NULL;
@@ -389,6 +436,10 @@ int listarTarefas(int indice_tarefa, int fildes, int arg){
     return 0;
 }
 
+/** 
+ * Função auxiliar responsável por ler uma 
+ * linha de um ficheiro
+ **/
 ssize_t readln(int fildes, char* line, size_t size){
 	ssize_t n = read(fildes,line,size);
     int i;
