@@ -135,6 +135,18 @@ int main(int argc,char const *argv[]){
 				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);
 				else{
 					
+					switch(output(fd_out,atoi(comando[1]),indice_tarefa)){
+						case 1:
+							write(fd_out, "Indicie invalido!\n",18);
+							break;
+						case 2:
+							write(fd_out, "Erro ao abrir o ficheiro tams.txt!\n",35);
+							break;
+						case 3:
+							write(fd_out,"Nao foi escrito nenhum output!\n",31);
+							break;
+
+					}
 				}
 			}
 			else{
