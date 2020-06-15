@@ -1,5 +1,5 @@
 all:
-	gcc argusd.c auxiliares.c funcionalidades.c output.c -Wall -o argusd
+	gcc argusd.c auxiliares.c funcionalidades.c -Wall -o argusd
 	gcc argus.c -Wall -o argus
 	mkfifo "Bus"
 	mkfifo "Cliente"

@@ -1,13 +1,17 @@
 #include "argus.h"
 
 int main(int argc, char *argv[]){
-	// Abrir o pipe que envia informação ao servidor
+	/*
+	Abrir o pipe que envia informação ao servidor
+	*/
 	int fd_out;
 	if((fd_out = open(CLIENTE,O_WRONLY)) < 0){
 		perror("open cliente");
 		exit(1);
 	}
-	// Abrir o pipe que recebe informação do servidor
+	/*
+	Abrir o pipe que recebe informação do servidor
+	*/
 	int fd_in;
 	if((fd_in = open(BUS,O_RDONLY)) < 0){
 		perror("open bus");
@@ -18,7 +22,9 @@ int main(int argc, char *argv[]){
 	char *buffer = NULL;
 	int read_bytes;
 	
-	// Se o cliente não passar argumentos, executar a shell 
+	/*
+	Se o cliente não passar argumentos, executar a shell
+	*/ 
 	if(argc == 1){
 		write(1,"\e[1;1H\e[2J",11);
 
@@ -37,7 +43,9 @@ int main(int argc, char *argv[]){
 			write(1,"argus$ ",7);
 		}
 	}
-	// Caso contrário, executar o comando dado pelo cliente
+	/*
+	Caso contrário, executar o comando dado pelo cliente
+	*/
 	else{
 		int i;
 		char comando[SIZE_S];

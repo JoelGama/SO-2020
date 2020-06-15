@@ -18,19 +18,25 @@ int main(int argc,char const *argv[]){
 	static int tempo_execucao = 0;
 	//static int tempo_inatividade = 0;
 	static int indice_tarefa = 0;
-	//Abrir o pipe que recebe informação do cliente
+	/*
+	Abrir o pipe que recebe informação do cliente
+	*/
 	int fd_in;
 	if((fd_in = open(CLIENTE,O_RDONLY)) < 0){
 		perror("open cliente");
 		exit(1);
 	}
-	//Abrir o pipe que envia informação ao cliente
+	/*
+	Abrir o pipe que envia informação ao cliente
+	*/
 	int fd_out;
 	if((fd_out = open(BUS,O_WRONLY)) < 0){
 		perror("open bus");
 		exit(1);
 	}
-
+	/*
+	Abrir o ficheiro "output.txt" e redirecionar o Standard output do argusd para o mesmo
+	*/ 
 	int fd_output;
 	if((fd_output = open("output.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
 		perror("open output");
@@ -38,13 +44,17 @@ int main(int argc,char const *argv[]){
 	}
 	dup2(fd_output, 1);
 	close(fd_output);
-
+	/*
+	Abrir o ficheiro que guarda o estado atual de cada tarefa
+	*/
 	int fd_log;
 	if((fd_log = open("log.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
 		perror("open log");
 		exit(1);
 	}
-
+	/*
+	Abrir o ficheiro que guarda os os Process ID de que cada tarefa necessitou de criar
+	*/
 	int fd_pids;
 	if((fd_pids = open("pids.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
 		perror("open pids");
@@ -57,6 +67,10 @@ int main(int argc,char const *argv[]){
 	char msg[SIZE_L] = "";
 	char aux[4] = "";
 
+	/*
+	O argusd fica permanentemente à espera de input vindo do argus,
+	evitando assim que este se feche aquando o argus
+	*/
 	while(1){
 		while((bytes_read = read(fd_in,buf,SIZE_S)) > 0){
 			comando = splitComando(buf);
@@ -129,23 +143,6 @@ int main(int argc,char const *argv[]){
 							break;
 						default:
 							break;	
-				}
-				}
-			}else if(strcmp(comando[0],"output") == 0){
-				if(comando[1] == NULL)write(fd_out, "Falta informacao!\n", 18);
-				else{
-					
-					switch(output(fd_out,atoi(comando[1]),indice_tarefa)){
-						case 1:
-							write(fd_out, "Indicie invalido!\n",18);
-							break;
-						case 2:
-							write(fd_out, "Erro ao abrir o ficheiro tams.txt!\n",35);
-							break;
-						case 3:
-							write(fd_out,"Nao foi escrito nenhum output!\n",31);
-							break;
-
 					}
 				}
 			}
