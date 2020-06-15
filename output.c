@@ -17,8 +17,6 @@ cada valor é a posição onde
 termina de ser escrito o seu output
 */
 
-
-
 int output(int filedes_Out,int filedes_output,int indice_tarefa,int indice_tarefa_max){
     if(indice_tarefa >= indice_tarefa_max){
         return 1;
@@ -56,7 +54,7 @@ int output(int filedes_Out,int filedes_output,int indice_tarefa,int indice_taref
     int leitura = pos[1] - pos[0];
     lseek(filedes_Out,pos[0],SEEK_SET);
     buffer[0] = '\0';
-    if((read_bytes=read(filedes_output,buffer,leitura)>0){
+    if((read_bytes=read(filedes_output,buffer,leitura)>0)){
         write(filedes_Out,buffer,read_bytes);
     }
 

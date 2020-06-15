@@ -9,6 +9,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include "auxiliares.h"
+#include "funcionalidades.h"
 
 // Fifos
 #define BUS "Bus"
