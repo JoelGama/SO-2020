@@ -31,13 +31,13 @@ int main(int argc,char const *argv[]){
 		exit(1);
 	}
 
-	int fd_lixo;
-	if((fd_lixo = open("output.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
+	int fd_output;
+	if((fd_output = open("output.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){
 		perror("open output");
 		exit(1);
 	}
-	dup2(fd_lixo, 1);
-	close(fd_lixo);
+	dup2(fd_output, 1);
+	close(fd_output);
 
 	int fd_log;
 	if((fd_log = open("log.txt", O_CREAT | O_TRUNC | O_RDWR, 0660)) < 0){

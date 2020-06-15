@@ -1,1 +1,0 @@
-This is just a test file, try to execute the "execute.c" file with "gcc execute.c -o execute". Then type "./execute "cat txt.txt"
