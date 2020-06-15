@@ -313,7 +313,7 @@ int terminar(int indice_tarefa, int last_indice_tarefa){
     return 0;
 } 
 
-int listar(int indice_tarefa,int fildes){
+int listarHistorico(int indice_tarefa, int fildes, int arg){
 
     char *buf = NULL;
     char atual[100];
@@ -340,82 +340,44 @@ int listar(int indice_tarefa,int fildes){
 
         int x = atoi(s2);
 
-        if(x == 0){
-            strcat(toWrite,"#");
-            strcat(toWrite,s1);
-            strcat(toWrite," em execução: ");
+        if (arg == 0){
+            if(x == 0){
+                strcat(toWrite,"#");
+                strcat(toWrite,s1);
+                strcat(toWrite," em execução: ");
 
-            strcat(toWrite,s3);
+                strcat(toWrite,s3);
 
-            strcat(toWrite,"\n");
-            strcat(buf,toWrite);
-            nProcessos++;
-        }
-
-        free(toWrite);
-    }
-    if(nProcessos > 0) write(fildes,buf,strlen(buf));
-    else return 2;
-
-    free(buf);
-    close(fd_log);
-        
-    return 0;
-}
-
-int historico(int indice_tarefa, int fildes){
-
-    char *buf = NULL;
-    char atual[100];
-    char *toWrite = NULL;
-    int fd_log;
-    int bytes = 0;
-    int i = 0;
-    int nProcessos = 0;
-
-    buf = malloc(sizeof(char) * 1024);
-
-    if((fd_log = open("log.txt", O_RDONLY) ) < 0){
-        perror("open log");
-		exit(1);
-    }
-
-    while((bytes = readln(fd_log,atual,100)) > 0 && i++ < indice_tarefa){
-        
-        toWrite = malloc(sizeof(char) * 100);
-            
-        char* s1 = strtok(atual," ");
-        char* s2 = strtok(NULL," ");
-        char* s3 = strtok(NULL,"\n");
-
-        int x = atoi(s2);
-
-        if(x != 0){
-            strcat(toWrite,"#");
-            strcat(toWrite,s1);
-            switch(x){
-                case 1:
-                    strcat(toWrite," terminou: ");
-                    break;
-                case 2:
-                    strcat(toWrite," max execução: ");
-                    break;
-                case 3:
-                    strcat(toWrite," max inatividade: ");
-                    break;
-                case 4:
-                    strcat(toWrite," morto pelo utilizador: ");
-                    break;
-                default:
-                    break;
+                strcat(toWrite,"\n");
+                strcat(buf,toWrite);
+                nProcessos++;
             }
-
-            strcat(toWrite,s3);
-            strcat(toWrite,"\n");
-            strcat(buf,toWrite);
-            nProcessos ++;
+        } else {
+            if(x != 0){
+                strcat(toWrite,"#");
+                strcat(toWrite,s1);
+                switch(x){
+                    case 1:
+                        strcat(toWrite," terminou: ");
+                        break;
+                    case 2:
+                        strcat(toWrite," max execução: ");
+                        break;
+                    case 3:
+                        strcat(toWrite," max inatividade: ");
+                        break;
+                    case 4:
+                        strcat(toWrite," morto pelo utilizador: ");
+                        break;
+                    default:
+                        break;
+                }
+                strcat(toWrite,s3);
+                strcat(toWrite,"\n");
+                strcat(buf,toWrite);
+                nProcessos ++;
+            }
         }
-
         free(toWrite);
     }
     if(nProcessos > 0) write(fildes,buf,strlen(buf));
